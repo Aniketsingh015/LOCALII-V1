@@ -3,7 +3,7 @@ spring:
     name: localii-backend
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/localii
+    url: jdbc:postgresql://localhost:5440/localii
     username: localii
     password: localii_dev_password
     driver-class-name: org.postgresql.Driver
