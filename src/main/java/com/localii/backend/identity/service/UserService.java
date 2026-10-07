@@ -4,6 +4,7 @@ import com.localii.backend.identity.dto.RegisterRequest;
 import com.localii.backend.identity.dto.UserResponse;
 import com.localii.backend.identity.entity.User;
 import com.localii.backend.identity.repository.UserRepository;
+import com.localii.backend.common.exception.DuplicateResourceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,11 +18,11 @@ public class UserService {
 
     public UserResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new IllegalArgumentException("Email already registered");
-        }
+            throw new DuplicateResourceException("Email already registered");
+         }
         if (userRepository.existsByPhone(request.getPhone())) {
-            throw new IllegalArgumentException("Phone already registered");
-        }
+            throw new DuplicateResourceException("Phone already registered");
+         }
 
         User user = new User();
         user.setEmail(request.getEmail());
