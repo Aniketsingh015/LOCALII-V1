@@ -1,5 +1,6 @@
 package com.localii.backend.identity.controller;   //1)which folder the files live in 
 
+import com.localii.backend.identity.dto.LoginRequest;
 // 2)classes which this file wants to use
 import com.localii.backend.identity.dto.RegisterRequest;
 import com.localii.backend.identity.dto.UserResponse;
@@ -25,5 +26,10 @@ public class UserController { //the class
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) { //what it can do
         UserResponse response = userService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(@Valid @RequestBody LoginRequest request) {
+        return ResponseEntity.ok(userService.login(request));
     }
 }
