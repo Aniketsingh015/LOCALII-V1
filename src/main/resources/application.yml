@@ -27,11 +27,13 @@ spring:
       host: localhost
       port: 6379
 
+  
+
 server:
   port: 8080
 
 # Custom app properties (read via @Value or a @ConfigurationProperties class later)
 localii:
   jwt:
-    secret: change-this-to-a-long-random-secret-before-real-use
-    expiration-ms: 86400000   # 24 hours
+    secret: ${JWT_SECRET:dev-only-secret-change-me-dev-only-secret-change-me-1234}
+    expiration-ms: 86400000
