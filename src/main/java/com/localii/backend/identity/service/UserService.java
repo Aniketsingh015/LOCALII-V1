@@ -1,10 +1,13 @@
 package com.localii.backend.identity.service;
 
+import com.localii.backend.identity.dto.LoginRequest;
 import com.localii.backend.identity.dto.RegisterRequest;
 import com.localii.backend.identity.dto.UserResponse;
 import com.localii.backend.identity.entity.User;
 import com.localii.backend.identity.repository.UserRepository;
 import com.localii.backend.common.exception.DuplicateResourceException;
+import com.localii.backend.common.exception.InvalidCredentialsException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,4 +36,14 @@ public class UserService {
         User saved = userRepository.save(user);
         return new UserResponse(saved);
     }
+    public UserResponse login(LoginRequest request) {
+    User user = userRepository.findByEmail(request.getEmail())
+            .orElseThrow(InvalidCredentialsException::new);
+
+    if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+        throw new InvalidCredentialsException();
+    }
+
+    return new UserResponse(user);
+}
 }
