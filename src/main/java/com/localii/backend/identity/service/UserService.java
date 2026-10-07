@@ -1,10 +1,13 @@
 package com.localii.backend.identity.service;
 
 import com.localii.backend.identity.dto.LoginRequest;
+import com.localii.backend.identity.dto.LoginResponse;
+
 import com.localii.backend.identity.dto.RegisterRequest;
 import com.localii.backend.identity.dto.UserResponse;
 import com.localii.backend.identity.entity.User;
 import com.localii.backend.identity.repository.UserRepository;
+import com.localii.backend.identity.security.JwtService;
 import com.localii.backend.common.exception.DuplicateResourceException;
 import com.localii.backend.common.exception.InvalidCredentialsException;
 
@@ -18,6 +21,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
     public UserResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
@@ -36,7 +40,8 @@ public class UserService {
         User saved = userRepository.save(user);
         return new UserResponse(saved);
     }
-    public UserResponse login(LoginRequest request) {
+
+    public LoginResponse login(LoginRequest request) {
     User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(InvalidCredentialsException::new);
 
@@ -44,6 +49,7 @@ public class UserService {
         throw new InvalidCredentialsException();
     }
 
-    return new UserResponse(user);
+    String token = jwtService.generateToken(user);
+    return new LoginResponse(token, new UserResponse(user));
 }
 }
