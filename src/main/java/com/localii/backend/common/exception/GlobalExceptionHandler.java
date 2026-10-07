@@ -36,4 +36,10 @@ public class GlobalExceptionHandler {
                 HttpStatus.BAD_REQUEST, "Malformed JSON or invalid value in request body");
         return ResponseEntity.badRequest().body(body);
     }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(InvalidCredentialsException ex) {
+        ErrorResponse body = new ErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
 }
