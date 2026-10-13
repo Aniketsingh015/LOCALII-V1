@@ -10,6 +10,7 @@ import com.localii.backend.identity.repository.UserRepository;
 import com.localii.backend.identity.security.JwtService;
 import com.localii.backend.common.exception.DuplicateResourceException;
 import com.localii.backend.common.exception.InvalidCredentialsException;
+import com.localii.backend.common.exception.ForbiddenOperationException;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +25,10 @@ public class UserService {
     private final JwtService jwtService;
 
     public UserResponse register(RegisterRequest request) {
+        if (request.getRole() == User.Role.ADMIN) {
+          throw new ForbiddenOperationException("Admin accounts cannot be self-registered");
+        }
+
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new DuplicateResourceException("Email already registered");
          }
@@ -37,6 +42,11 @@ public class UserService {
         user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         user.setRole(request.getRole());
 
+        User.Status status = (request.getRole() == User.Role.CUSTOMER)
+        ? User.Status.ACTIVE
+        : User.Status.PENDING;
+        user.setStatus(status);
+
         User saved = userRepository.save(user);
         return new UserResponse(saved);
     }
@@ -48,6 +58,10 @@ public class UserService {
     if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
         throw new InvalidCredentialsException();
     }
+
+    if (user.getStatus() == User.Status.SUSPENDED) {
+         throw new ForbiddenOperationException("Account is suspended");
+    }   
 
     String token = jwtService.generateToken(user);
     return new LoginResponse(token, new UserResponse(user));
