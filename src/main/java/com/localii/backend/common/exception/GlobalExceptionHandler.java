@@ -47,5 +47,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenOperationException ex) {
         ErrorResponse body = new ErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
-}
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+        public ResponseEntity<ErrorResponse> handleNotFound(ResourceNotFoundException ex) { 
+        ErrorResponse body = new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
+    }
 }
