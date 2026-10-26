@@ -34,5 +34,7 @@ public class DocumentController {
     public List<DocumentResponse> listMine(Authentication auth) {
         UUID userId = UUID.fromString(auth.getName());
         return documentService.listMine(userId).stream().map(DocumentResponse::new).toList();
+        // this line after.stream().map(documetnResponse::new).toList
+        // here the list of documents is returned now each documents will be converted into json by document resposne and sent back 
     }
 }

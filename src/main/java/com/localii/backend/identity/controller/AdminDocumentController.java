@@ -15,13 +15,13 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/admin/documents")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMIN')")//only an admin can list documents or review them. A vendor or customer gets 403 on every route in this class.
 public class AdminDocumentController {
 
     private final DocumentService documentService;
 
     @GetMapping
-    public List<DocumentResponse> list(@RequestParam(defaultValue = "PENDING") VerificationStatus status) {
+    public List<DocumentResponse> list(@RequestParam(defaultValue = "PENDING") VerificationStatus status) {//Read a value from the URL’s query string, like ?status=APPROVED.
         return documentService.listByStatus(status).stream().map(DocumentResponse::new).toList();
     }
 
