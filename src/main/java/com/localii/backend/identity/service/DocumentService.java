@@ -37,12 +37,14 @@ public class DocumentService {
 
     @Transactional(readOnly = true)
     public List<VerificationDocument> listMine(UUID userId) {
-        return documentRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        return documentRepository.findByUserIdOrderByCreatedAtDesc(userId);//this inside line means find by+userId where useIdequal this value
+        //orderby+created+descending:So the vendor sees their latest upload at the top
+        // this method is returning a list and <...> this is known as generic it tells java what list it holds
     }
 
     @Transactional(readOnly = true)
     public List<VerificationDocument> listByStatus(VerificationStatus status) {
-        return documentRepository.findByStatusOrderByCreatedAtAsc(status);
+        return documentRepository.findByStatusOrderByCreatedAtAsc(status);//Asc means oldest first. For a review queue that makes sense: whoever uploaded first gets reviewed first.
     }
 
     @Transactional

@@ -1,0 +1,5 @@
+CREATE TABLE categories(
+    id UUID PRIMARY KEY,
+    name VARCHAR(200) NOT NULL UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL
+)
